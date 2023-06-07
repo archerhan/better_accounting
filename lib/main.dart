@@ -1,16 +1,18 @@
-import 'package:better_accounting/constants/setting_service.dart';
 import 'package:better_accounting/i18n/app_translation.dart';
-import 'package:better_accounting/routes/app_pages.dart';
-import 'package:better_accounting/services/isar_service.dart';
+import 'package:better_accounting/pages/root/root_binding.dart';
+import 'package:better_accounting/pages/root/root_page.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 void main() async {
   await initServices();
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
+  otherConfigs();
 }
 
 /// service里面做App启动前的初始化,比如初始化存储,初始化主题数据,
@@ -19,6 +21,17 @@ Future initServices() async {
   await Get.putAsync(() async => await GetStorage.init(), permanent: true);
   // await Get.putAsync(() => IsarService.instance.init());
   // await Get.putAsync(() => SettingService().init());
+}
+
+void otherConfigs() {
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.dark,
+    // systemNavigationBarColor: Colors.black,
+    // systemNavigationBarDividerColor: Colors.transparent,
+    // systemNavigationBarIconBrightness: Brightness.dark,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -40,8 +53,8 @@ class MyApp extends StatelessWidget {
             defaultTransition: Transition.cupertino,
             popGesture: Get.isPopGestureEnable,
             fallbackLocale: const Locale('zh', 'CN'),
-            initialRoute: AppPages.kInitialRoute,
-            getPages: AppPages.routes,
+            initialBinding: RootBinding(),
+            home: const RootPage(),
             navigatorObservers: [BotToastNavigatorObserver()],
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

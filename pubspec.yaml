@@ -30,14 +30,36 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.0
   isar_generator: ^3.1.0+1
-  build_runner: ^2.4.4
+  build_runner:
+  flutter_gen_runner:
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/
+    - assets/images/common/
+    - assets/images/business/
+    - assets/images/entertainment/
+    - assets/images/family/
+    - assets/images/food/
+    - assets/images/income/
+    - assets/images/medical/
+    - assets/images/others/
+    - assets/images/shopping/
+    - assets/images/skill/
+    - assets/images/sport/
+    - assets/images/traffic/
 
-flutter_assets:
-  assets_path: assets/
-  output_path: lib/constants/
-  filename: assets.dart
+flutter_gen:
+  output: lib/constants/ # Optional (default: lib/gen/)
+  line_length: 80 # Optional (default: 80)
+
+  # Optional
+  # integrations:
+  #   flutter_svg: true
+  #   flare_flutter: true
+  #   rive: true
+  #   lottie: true
+
+  # colors:
+  #   inputs:
+  #     - assets/color/colors.xml
