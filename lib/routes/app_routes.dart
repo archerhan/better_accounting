@@ -1,7 +1,6 @@
 abstract class Routes {
   Routes._();
-}
-
-abstract class _Paths {
-  _Paths._();
+  static const root = '/';
+  static const accounts = '/accounts';
+  static const settings = '/settings';
 }

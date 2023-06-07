@@ -16,9 +16,9 @@ void main() async {
 /// service里面做App启动前的初始化,比如初始化存储,初始化主题数据,
 /// 初始化多语言(动态下发多语言),初始化设置等
 Future initServices() async {
-  await Get.putAsync(() async => await GetStorage.init());
-  await Get.putAsync(() => IsarService.instance.init());
-  await Get.putAsync(() => SettingService().init());
+  await Get.putAsync(() async => await GetStorage.init(), permanent: true);
+  // await Get.putAsync(() => IsarService.instance.init());
+  // await Get.putAsync(() => SettingService().init());
 }
 
 class MyApp extends StatelessWidget {
@@ -40,14 +40,13 @@ class MyApp extends StatelessWidget {
             defaultTransition: Transition.cupertino,
             popGesture: Get.isPopGestureEnable,
             fallbackLocale: const Locale('zh', 'CN'),
-            initialRoute: AppPages.INITIAL,
+            initialRoute: AppPages.kInitialRoute,
             getPages: AppPages.routes,
             navigatorObservers: [BotToastNavigatorObserver()],
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              useMaterial3: true,
+              useMaterial3: false,
             ),
-            home: Container(),
             builder: (context, widget) {
               widget = MediaQuery(
                 data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
