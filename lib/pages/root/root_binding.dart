@@ -1,6 +1,7 @@
 import 'package:better_accounting/pages/accounts/accounts_controller.dart';
 import 'package:better_accounting/pages/root/root_controller.dart';
 import 'package:better_accounting/pages/settings/settings_controller.dart';
+import 'package:better_accounting/widgets/date_picker/date_picker_controller.dart';
 import 'package:get/get.dart';
 
 class RootBinding implements Bindings {
@@ -9,5 +10,6 @@ class RootBinding implements Bindings {
     Get.lazyPut(() => RootController());
     Get.lazyPut(() => AccountsController());
     Get.lazyPut(() => SettingsController());
+    Get.lazyPut(() => DatePickerController());
   }
 }
