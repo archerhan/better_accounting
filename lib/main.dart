@@ -1,6 +1,7 @@
 import 'package:better_accounting/i18n/app_translation.dart';
 import 'package:better_accounting/pages/root/root_binding.dart';
 import 'package:better_accounting/pages/root/root_page.dart';
+import 'package:better_accounting/services/isar_service.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +20,7 @@ void main() async {
 /// 初始化多语言(动态下发多语言),初始化设置等
 Future initServices() async {
   await Get.putAsync(() async => await GetStorage.init(), permanent: true);
-  // await Get.putAsync(() => IsarService.instance.init());
+  await Get.putAsync(() async => IsarService.instance);
   // await Get.putAsync(() => SettingService().init());
 }
 

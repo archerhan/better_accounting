@@ -7,9 +7,9 @@ import 'package:get/get.dart';
 class RootBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => RootController());
-    Get.lazyPut(() => AccountsController());
-    Get.lazyPut(() => SettingsController());
+    Get.put(RootController());
+    Get.put(AccountsController());
+    Get.put(SettingsController());
     Get.lazyPut(() => DatePickerController());
   }
 }
