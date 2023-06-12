@@ -1,7 +1,6 @@
 // ignore_for_file: must_be_immutable, constant_identifier_names
 
 import 'package:better_accounting/constants/app_colors.dart';
-import 'package:better_accounting/utils/date_time_util.dart';
 import 'package:better_accounting/widgets/date_picker/date_picker_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +115,7 @@ class DatePickerView extends GetView<DatePickerController> {
                 )),
               );
             }).toList(), (index) {
-          controller.selectDay = controller.days.value[index].toString();
+          controller.selectDay = controller.days[index].toString();
         },
             initialIndex: controller.days
                 .indexWhere((element) => element == controller.selectDay)));

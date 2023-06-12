@@ -63,9 +63,9 @@ class DatePickerController extends GetxController {
   }
 
   setDays(int selectYear, int selectMonth) {
-    days.value.clear();
+    days.clear();
     for (int i = 1; i < getCurrentMonthDays(selectYear, selectMonth) + 1; i++) {
-      days.value.add(i > 9 ? i.toString() : '0$i');
+      days.add(i > 9 ? i.toString() : '0$i');
     }
     days.refresh();
   }

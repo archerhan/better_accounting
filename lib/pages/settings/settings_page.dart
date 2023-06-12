@@ -8,7 +8,7 @@ class SettingsPage extends GetView<SettingsController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Text("设置"),
       ),
