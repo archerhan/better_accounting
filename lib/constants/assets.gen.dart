@@ -607,10 +607,6 @@ class $AssetsImagesOthersGen {
 class $AssetsImagesShoppingGen {
   const $AssetsImagesShoppingGen();
 
-  /// File path: assets/images/shopping/shopping__cap.png
-  AssetGenImage get shoppingCap =>
-      const AssetGenImage('assets/images/shopping/shopping__cap.png');
-
   /// File path: assets/images/shopping/shopping_buying.png
   AssetGenImage get shoppingBuying =>
       const AssetGenImage('assets/images/shopping/shopping_buying.png');
@@ -618,6 +614,10 @@ class $AssetsImagesShoppingGen {
   /// File path: assets/images/shopping/shopping_camera.png
   AssetGenImage get shoppingCamera =>
       const AssetGenImage('assets/images/shopping/shopping_camera.png');
+
+  /// File path: assets/images/shopping/shopping_cap.png
+  AssetGenImage get shoppingCap =>
+      const AssetGenImage('assets/images/shopping/shopping_cap.png');
 
   /// File path: assets/images/shopping/shopping_clothes.png
   AssetGenImage get shoppingClothes =>
@@ -677,9 +677,9 @@ class $AssetsImagesShoppingGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
-        shoppingCap,
         shoppingBuying,
         shoppingCamera,
+        shoppingCap,
         shoppingClothes,
         shoppingFlipFlops,
         shoppingGift,
