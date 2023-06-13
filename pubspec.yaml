@@ -49,6 +49,7 @@ flutter:
     - assets/images/skill/
     - assets/images/sport/
     - assets/images/traffic/
+    - assets/json/
 
 flutter_gen:
   output: lib/constants/ # Optional (default: lib/gen/)

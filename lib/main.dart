@@ -1,3 +1,4 @@
+import 'package:better_accounting/constants/setting_service.dart';
 import 'package:better_accounting/i18n/app_translation.dart';
 import 'package:better_accounting/pages/root/root_binding.dart';
 import 'package:better_accounting/pages/root/root_page.dart';
@@ -18,10 +19,11 @@ void main() async {
 
 /// service里面做App启动前的初始化,比如初始化存储,初始化主题数据,
 /// 初始化多语言(动态下发多语言),初始化设置等
+/// 里面的执行顺序不能变, 否则会出错
 Future initServices() async {
   await Get.putAsync(() async => await GetStorage.init(), permanent: true);
   await Get.putAsync(() async => IsarService.instance);
-  // await Get.putAsync(() => SettingService().init());
+  await Get.putAsync(() async => SettingService());
 }
 
 void otherConfigs() {

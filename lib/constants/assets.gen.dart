@@ -27,6 +27,16 @@ class $AssetsImagesGen {
   $AssetsImagesTrafficGen get traffic => const $AssetsImagesTrafficGen();
 }
 
+class $AssetsJsonGen {
+  const $AssetsJsonGen();
+
+  /// File path: assets/json/icons.json
+  String get icons => 'assets/json/icons.json';
+
+  /// List of all assets
+  List<String> get values => [icons];
+}
+
 class $AssetsImagesBusinessGen {
   const $AssetsImagesBusinessGen();
 
@@ -930,6 +940,7 @@ class Assets {
   Assets._();
 
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $AssetsJsonGen json = $AssetsJsonGen();
 }
 
 class AssetGenImage {
