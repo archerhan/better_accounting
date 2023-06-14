@@ -1,6 +1,7 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:better_accounting/constants/app_colors.dart';
 import 'package:better_accounting/pages/accounts/accounts_page.dart';
+import 'package:better_accounting/pages/category/category_binding.dart';
 import 'package:better_accounting/pages/category/category_page.dart';
 import 'package:better_accounting/pages/root/root_controller.dart';
 import 'package:better_accounting/pages/settings/settings_page.dart';
@@ -33,7 +34,9 @@ class RootPage extends GetView<RootController> {
       onPressed: () {
         SystemSound.play(SystemSoundType.click);
         Get.to(const CategoryPage(),
-            transition: Transition.downToUp, curve: Curves.easeInOut);
+            binding: CategoryBinding(),
+            transition: Transition.downToUp,
+            curve: Curves.easeInOut);
       },
       child: const Icon(
         CupertinoIcons.add,

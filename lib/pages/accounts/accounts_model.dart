@@ -78,4 +78,7 @@ class IconAssetModel {
   late DateTime createDT;
   // 修改时间
   late DateTime updateDT;
+  // 是否被选中(无需存入数据库)
+  @ignore
+  bool isSelected = false;
 }
