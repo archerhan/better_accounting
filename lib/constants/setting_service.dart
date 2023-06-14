@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 
 class SettingService extends GetxService {
   /// 初始化时加载Icon数据
-  Future loadAssets() async {
+  Future preLoadAssets() async {
     // 需要判断一下本地的数据库中有没有, 如果有数据就不需要加载了
     final isNotEmpty =
         await IsarService.instance.isar.iconAssetModels.count() > 0;
@@ -33,7 +33,7 @@ class SettingService extends GetxService {
       var iconModel = IconAssetModel();
       iconModel.assetPath = path;
       iconModel.index = i;
-      iconModel.name = (parts.last).tr;
+      iconModel.name = parts.last;
       iconModel.memos = <String>[];
       iconModel.tags = <String>[];
       iconModel.isCustomized = false;

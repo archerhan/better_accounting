@@ -23,9 +23,9 @@ class IsarService extends GetxService {
     isar = Isar.openSync([AccountsModelSchema, IconAssetModelSchema],
         directory: dir.path);
     if (isar.isOpen) {
-      logger.d("==IsarDB已开启可以进行操作了==");
+      logger.i("==IsarDB已开启可以进行操作了==");
       var settingService = Get.find<SettingService>();
-      settingService.loadAssets();
+      await settingService.preLoadAssets();
     }
   }
 }

@@ -5,8 +5,4 @@ class CategoryController extends GetxController {
   void onInit() {
     super.onInit();
   }
-
-  void loadAssetFronPackage() {
-    
-}
 }

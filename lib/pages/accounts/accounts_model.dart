@@ -54,6 +54,7 @@ enum IconType {
 class IconAssetModel {
   Id? id;
   // 排列顺序(可能涉及重排)
+  @Index(unique: true)
   int? index;
   // icon的名字
   late String name;
