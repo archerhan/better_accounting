@@ -60,9 +60,12 @@ class MyApp extends StatelessWidget {
             home: const RootPage(),
             navigatorObservers: [BotToastNavigatorObserver()],
             theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              useMaterial3: false,
-            ),
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                useMaterial3: false,
+                // 全局去掉点击的背景高亮颜色
+                highlightColor: Colors.transparent,
+                // 全局去掉水波纹效果
+                splashColor: Colors.transparent),
             builder: (context, widget) {
               widget = MediaQuery(
                 data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),

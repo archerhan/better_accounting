@@ -25,6 +25,7 @@ dependencies:
   animated_bottom_navigation_bar: ^1.2.0
   soundpool: ^2.3.0
   date_format: ^2.0.7
+  flutter_reorderable_grid_view: ^4.0.0
 
 dev_dependencies:
   flutter_test:

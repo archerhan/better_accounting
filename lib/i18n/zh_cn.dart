@@ -11,6 +11,9 @@ class ZHCN {
     "accounts_income": "收入",
     "accounts_balance": "结余:",
     "accounts_more_analyze": "更多分析>>",
+    // 类别
+    "category_setting": "类别设置",
+
     // Icon名字
     "business_cable": "数据线",
     "business_cafe": "咖啡",

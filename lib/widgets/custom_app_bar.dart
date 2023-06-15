@@ -24,7 +24,10 @@ class CustomAppBar extends AppBar {
           leading: leftAction,
           title: Text(text,
               style: textStyle ??
-                  TextStyle(color: AppColors.mainTitle333, fontSize: 18.sp)),
+                  TextStyle(
+                      color: AppColors.mainTitle333,
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w600)),
           centerTitle: center,
           shadowColor: shadow,
           backgroundColor: bgColor,

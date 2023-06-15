@@ -1,45 +1,24 @@
 import 'package:better_accounting/constants/app_colors.dart';
 import 'package:better_accounting/pages/accounts/accounts_model.dart';
 import 'package:better_accounting/pages/category/category_controller.dart';
-import 'package:better_accounting/pages/category/category_edit_page.dart';
+import 'package:better_accounting/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 
-class CategoryPage extends GetView<CategoryController> {
-  const CategoryPage({super.key});
+class CategoryEditPage extends GetView<CategoryController> {
+  const CategoryEditPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.mainWhite,
-        automaticallyImplyLeading: true,
-        elevation: 0,
-        centerTitle: true,
-        title: _categoryBar(),
-        foregroundColor: AppColors.mainBlack,
-        actions: [_settingIcon()],
+      appBar: CustomAppBar(
+        text: "category_setting".tr,
       ),
       backgroundColor: AppColors.mainWhite,
       body: Column(
         children: [Expanded(child: _pageView())],
-      ),
-    );
-  }
-
-  Widget _settingIcon() {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () => Get.to(const CategoryEditPage()),
-      child: Container(
-        padding: EdgeInsets.all(5.w),
-        child: Icon(
-          Icons.settings,
-          size: 26.w,
-          color: AppColors.grey999,
-        ),
       ),
     );
   }
@@ -57,9 +36,9 @@ class CategoryPage extends GetView<CategoryController> {
           )
         ],
         labelColor: AppColors.mainTitle333,
-        labelStyle: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600),
+        labelStyle: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w600),
         unselectedLabelStyle:
-            TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+            TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
         unselectedLabelColor: AppColors.grey999,
         indicatorSize: TabBarIndicatorSize.label,
         indicatorWeight: 2.h,
