@@ -5,6 +5,7 @@ import 'package:better_accounting/utils/logger_util.dart';
 import 'package:better_accounting/widgets/custom_divider.dart';
 import 'package:better_accounting/widgets/date_picker/date_picker_view.dart';
 import 'package:better_accounting/widgets/dialog.dart';
+import 'package:better_accounting/widgets/keyboard/custom_keyboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,9 +18,13 @@ class AccountsPage extends GetView<AccountsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.mainWhite,
-      body: Stack(
-        alignment: Alignment.topCenter,
-        children: [_header(), Positioned(bottom: 40.h, child: _card())],
+      body: Column(
+        children: [
+          Stack(
+            alignment: Alignment.topCenter,
+            children: [_header(), Positioned(bottom: 40.h, child: _card())],
+          ),
+        ],
       ),
     );
   }
