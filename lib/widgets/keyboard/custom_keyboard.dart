@@ -24,10 +24,10 @@ class CustomKeyboard extends GetView<CustomKeyboardService> {
 
   Widget _numberResult() {
     return Obx(() => Text(
-          controller.numberResult.value,
+          controller.numberResult.join(),
           style: TextStyle(
               color: AppColors.mainTitle333,
-              fontSize: 18.sp,
+              fontSize: 28.sp,
               fontWeight: FontWeight.w600),
         ));
   }

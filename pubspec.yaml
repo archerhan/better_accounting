@@ -26,6 +26,9 @@ dependencies:
   soundpool: ^2.3.0
   date_format: ^2.0.7
   flutter_reorderable_grid_view: ^4.0.0
+  flutter_grid_button: ^2.0.0
+  expressions: ^0.2.5
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:
