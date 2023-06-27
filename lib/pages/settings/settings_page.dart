@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import '../../widgets/keyboard/custom_keyboard.dart';
-
 class SettingsPage extends GetView<SettingsController> {
   const SettingsPage({super.key});
 
