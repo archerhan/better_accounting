@@ -6,6 +6,7 @@ class ZHCN {
     "common_day": "日",
     "common_ok": "确定",
     "common_cancel": "取消",
+    "common_today": "今日",
     // 近期记账
     "accounts_expenses": "支出",
     "accounts_income": "收入",

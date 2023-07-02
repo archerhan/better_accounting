@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_grid_button/flutter_grid_button.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'calc_controller.dart';
@@ -439,10 +440,10 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
 
   List<List<GridButtonItem>> _getItems() {
     return [
-      [_nums[7], _nums[8], _nums[9], '📅'],
+      [_nums[7], _nums[8], _nums[9], 'common_today'.tr],
       [_nums[4], _nums[5], _nums[6], '-'],
       [_nums[1], _nums[2], _nums[3], '+'],
-      [_nums[0], _controller.numberFormat.symbols.DECIMAL_SEP, _acLabel, '='],
+      [_nums[0], _controller.numberFormat.symbols.DECIMAL_SEP, '←', '='],
     ].map((items) {
       return items.map((title) {
         Color color =
@@ -452,14 +453,15 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
             title == '+' ||
             title == '-' ||
             title == '×' ||
-            title == '÷') {
+            title == '÷' ||
+            title == 'common_today'.tr) {
           color = widget.theme?.operatorColor ?? Theme.of(context).primaryColor;
           style = widget.theme?.operatorStyle ??
               _baseStyle.copyWith(
                   color: Theme.of(context).primaryTextTheme.titleLarge!.color);
         }
         if (title == _controller.numberFormat.symbols.PERCENT ||
-            title == '→' ||
+            title == "==" ||
             title == 'C' ||
             title == 'AC') {
           color = widget.theme?.commandColor ?? Theme.of(context).splashColor;
