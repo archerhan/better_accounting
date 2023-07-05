@@ -29,6 +29,7 @@ dependencies:
   flutter_grid_button: ^2.0.0
   expressions: ^0.2.5
   auto_size_text: ^3.0.0
+  sliding_up_panel: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:

@@ -2,10 +2,13 @@ import 'package:better_accounting/constants/app_colors.dart';
 import 'package:better_accounting/pages/accounts/accounts_model.dart';
 import 'package:better_accounting/pages/category/category_controller.dart';
 import 'package:better_accounting/pages/category/category_edit_page.dart';
+import 'package:better_accounting/widgets/caculator/simple_calculator.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class CategoryPage extends GetView<CategoryController> {
   const CategoryPage({super.key});
@@ -23,8 +26,49 @@ class CategoryPage extends GetView<CategoryController> {
         actions: [_settingIcon()],
       ),
       backgroundColor: AppColors.mainWhite,
-      body: Column(
-        children: [Expanded(child: _pageView())],
+      body: SlidingUpPanel(
+        controller: controller.panelController,
+        minHeight: 0,
+        maxHeight: 380,
+        panel: _showCal(),
+        body: Column(
+          children: [Expanded(child: _pageView())],
+        ),
+      ),
+    );
+  }
+
+  Widget _showCal() {
+    return SizedBox(
+      height: 380,
+      child: SimpleCalculator(
+        hideExpression: false,
+        hideSurroundingBorder: true,
+        autofocus: true,
+        onChanged: (key, value, expression) {
+          if (kDebugMode) {
+            print('$key\t$value\t$expression');
+          }
+        },
+        onTappedDisplay: (value, details) {
+          if (kDebugMode) {
+            print('$value\t${details.globalPosition}');
+          }
+        },
+        theme: const CalculatorThemeData(
+          borderColor: AppColors.dividerEEE,
+          borderWidth: 1,
+          displayColor: AppColors.mainWhite,
+          displayStyle: TextStyle(fontSize: 80, color: AppColors.mainTitle333),
+          expressionColor: AppColors.primaryBlue,
+          expressionStyle: TextStyle(fontSize: 16, color: AppColors.mainWhite),
+          operatorColor: AppColors.mainWhite,
+          operatorStyle: TextStyle(fontSize: 30, color: AppColors.mainTitle333),
+          commandColor: AppColors.primaryYellow,
+          commandStyle: TextStyle(fontSize: 30, color: AppColors.mainWhite),
+          numColor: AppColors.mainWhite,
+          numStyle: TextStyle(fontSize: 30, color: AppColors.mainTitle333),
+        ),
       ),
     );
   }
@@ -116,6 +160,7 @@ class CategoryPage extends GetView<CategoryController> {
         GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
+            _showCal();
             controller.selectIcon(iconAssetModel);
           },
           child: Container(

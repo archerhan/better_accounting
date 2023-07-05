@@ -1,5 +1,7 @@
 // Copyright 2019 zuvola. All rights reserved.
 
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:expressions/expressions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';

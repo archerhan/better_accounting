@@ -1,3 +1,4 @@
+import 'package:better_accounting/constants/app_colors.dart';
 import 'package:better_accounting/pages/settings/settings_controller.dart';
 import 'package:better_accounting/widgets/caculator/simple_calculator.dart';
 import 'package:flutter/foundation.dart';
@@ -13,10 +14,12 @@ class SettingsPage extends GetView<SettingsController> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(
+          Spacer(),
+          Container(
+              child: SizedBox(
             height: 300,
-          ),
-          Expanded(child: _calculator()),
+            child: _calculator(),
+          )),
         ],
       ),
     );
@@ -42,18 +45,18 @@ class SettingsPage extends GetView<SettingsController> {
         }
       },
       theme: const CalculatorThemeData(
-        borderColor: Colors.black,
-        borderWidth: 2,
-        displayColor: Colors.black,
-        displayStyle: TextStyle(fontSize: 80, color: Colors.yellow),
-        expressionColor: Colors.indigo,
-        expressionStyle: TextStyle(fontSize: 16, color: Colors.white),
-        operatorColor: Colors.pink,
-        operatorStyle: TextStyle(fontSize: 30, color: Colors.white),
-        commandColor: Colors.orange,
-        commandStyle: TextStyle(fontSize: 30, color: Colors.white),
-        numColor: Colors.grey,
-        numStyle: TextStyle(fontSize: 30, color: Colors.white),
+        borderColor: AppColors.dividerEEE,
+        borderWidth: 1,
+        displayColor: AppColors.mainWhite,
+        displayStyle: TextStyle(fontSize: 80, color: AppColors.primaryYellow),
+        expressionColor: AppColors.primaryBlue,
+        expressionStyle: TextStyle(fontSize: 16, color: AppColors.mainWhite),
+        operatorColor: AppColors.mainWhite,
+        operatorStyle: TextStyle(fontSize: 30, color: AppColors.mainTitle333),
+        commandColor: AppColors.primaryYellow,
+        commandStyle: TextStyle(fontSize: 30, color: AppColors.mainWhite),
+        numColor: AppColors.mainWhite,
+        numStyle: TextStyle(fontSize: 30, color: AppColors.mainTitle333),
       ),
     );
   }

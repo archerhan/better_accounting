@@ -3,6 +3,7 @@ import 'package:better_accounting/services/isar_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class CategoryController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -10,6 +11,7 @@ class CategoryController extends GetxController
   var expensesList = <IconAssetModel>[].obs;
   var incomeList = <IconAssetModel>[].obs;
   var currentSelectedIcon = IconAssetModel().obs;
+  PanelController panelController = PanelController();
 
   late TabController tabController;
   late PageController pageController;
@@ -42,5 +44,11 @@ class CategoryController extends GetxController
       }
       return element;
     }).toList();
+    if (iconAssetModel.iconType == IconType.expenses) {
+      expensesList.refresh();
+    } else {
+      incomeList.refresh();
+    }
+    panelController.open();
   }
 }

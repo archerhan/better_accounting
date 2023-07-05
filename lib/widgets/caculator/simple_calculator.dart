@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -392,7 +394,7 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
       onPressed: (dynamic val) {
         _focusNode.requestFocus();
         switch (val) {
-          case '→':
+          case '←':
             _controller.removeDigit();
             break;
           case '±':
