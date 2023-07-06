@@ -3,6 +3,7 @@ import 'package:better_accounting/pages/accounts/accounts_model.dart';
 import 'package:better_accounting/pages/category/category_controller.dart';
 import 'package:better_accounting/pages/category/category_edit_page.dart';
 import 'package:better_accounting/widgets/caculator/simple_calculator.dart';
+import 'package:better_accounting/widgets/vertical_line.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,35 +42,89 @@ class CategoryPage extends GetView<CategoryController> {
   Widget _showCal() {
     return SizedBox(
       height: 380,
-      child: SimpleCalculator(
-        hideExpression: false,
-        hideSurroundingBorder: true,
-        autofocus: true,
-        onChanged: (key, value, expression) {
-          if (kDebugMode) {
-            print('$key\t$value\t$expression');
-          }
-        },
-        onTappedDisplay: (value, details) {
-          if (kDebugMode) {
-            print('$value\t${details.globalPosition}');
-          }
-        },
-        theme: const CalculatorThemeData(
-          borderColor: AppColors.dividerEEE,
-          borderWidth: 1,
-          displayColor: AppColors.mainWhite,
-          displayStyle: TextStyle(fontSize: 80, color: AppColors.mainTitle333),
-          expressionColor: AppColors.primaryBlue,
-          expressionStyle: TextStyle(fontSize: 16, color: AppColors.mainWhite),
-          operatorColor: AppColors.mainWhite,
-          operatorStyle: TextStyle(fontSize: 30, color: AppColors.mainTitle333),
-          commandColor: AppColors.primaryYellow,
-          commandStyle: TextStyle(fontSize: 30, color: AppColors.mainWhite),
-          numColor: AppColors.mainWhite,
-          numStyle: TextStyle(fontSize: 30, color: AppColors.mainTitle333),
-        ),
+      child: Column(
+        children: [
+          _calToolBar(),
+          Expanded(
+            child: SimpleCalculator(
+              hideExpression: false,
+              hideSurroundingBorder: true,
+              autofocus: true,
+              onChanged: (key, value, expression) {
+                if (key == "OK") {
+                  controller.panelController.close();
+                  Get.back();
+                }
+                if (kDebugMode) {
+                  print('$key\t$value\t$expression');
+                }
+              },
+              onTappedDisplay: (value, details) {
+                if (kDebugMode) {
+                  print('$value\t${details.globalPosition}');
+                }
+              },
+              theme: const CalculatorThemeData(
+                borderColor: AppColors.dividerEEE,
+                borderWidth: 1,
+                displayColor: AppColors.mainWhite,
+                displayStyle:
+                    TextStyle(fontSize: 80, color: AppColors.mainTitle333),
+                expressionColor: AppColors.primaryBlue,
+                expressionStyle:
+                    TextStyle(fontSize: 16, color: AppColors.mainWhite),
+                operatorColor: AppColors.mainWhite,
+                operatorStyle:
+                    TextStyle(fontSize: 30, color: AppColors.mainTitle333),
+                commandColor: AppColors.primaryYellow,
+                commandStyle:
+                    TextStyle(fontSize: 30, color: AppColors.mainWhite),
+                numColor: AppColors.mainWhite,
+                numStyle:
+                    TextStyle(fontSize: 30, color: AppColors.mainTitle333),
+              ),
+            ),
+          )
+        ],
       ),
+    );
+  }
+
+  Widget _calToolBar() {
+    return Row(
+      children: [
+        TextButton.icon(
+            label: Text("日期"),
+            onPressed: () {},
+            icon: const Icon(
+              Icons.calendar_month,
+              color: AppColors.brightBlue,
+            )),
+        const VerticalLine(),
+        TextButton.icon(
+            label: Text("备注"),
+            onPressed: () {},
+            icon: const Icon(
+              Icons.note,
+              color: AppColors.brightBlue,
+            )),
+        const VerticalLine(),
+        TextButton.icon(
+            label: Text("标签"),
+            onPressed: () {},
+            icon: const Icon(
+              Icons.label,
+              color: AppColors.brightBlue,
+            )),
+        const VerticalLine(),
+        TextButton.icon(
+            label: Text("定位"),
+            onPressed: () {},
+            icon: const Icon(
+              Icons.location_on,
+              color: AppColors.brightBlue,
+            )),
+      ],
     );
   }
 

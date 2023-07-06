@@ -14,8 +14,8 @@ class SettingsPage extends GetView<SettingsController> {
     return Scaffold(
       body: Column(
         children: [
-          Spacer(),
-          Container(
+          const Spacer(),
+          SizedBox(
               child: SizedBox(
             height: 300,
             child: _calculator(),

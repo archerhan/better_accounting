@@ -442,16 +442,16 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
 
   List<List<GridButtonItem>> _getItems() {
     return [
-      [_nums[7], _nums[8], _nums[9], 'common_today'.tr],
+      [_nums[7], _nums[8], _nums[9], '+'],
       [_nums[4], _nums[5], _nums[6], '-'],
-      [_nums[1], _nums[2], _nums[3], '+'],
-      [_nums[0], _controller.numberFormat.symbols.DECIMAL_SEP, '←', '='],
+      [_nums[1], _nums[2], _nums[3], '='],
+      [_nums[0], _controller.numberFormat.symbols.DECIMAL_SEP, '←', 'OK'],
     ].map((items) {
       return items.map((title) {
         Color color =
             widget.theme?.numColor ?? Theme.of(context).scaffoldBackgroundColor;
         TextStyle? style = widget.theme?.numStyle;
-        if (title == '=' ||
+        if (title == 'OK' ||
             title == '+' ||
             title == '-' ||
             title == '×' ||
