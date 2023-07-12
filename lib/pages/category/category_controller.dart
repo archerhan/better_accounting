@@ -51,4 +51,5 @@ class CategoryController extends GetxController
     }
     panelController.open();
   }
+
 }

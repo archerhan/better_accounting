@@ -1,6 +1,7 @@
 import 'package:better_accounting/constants/app_colors.dart';
 import 'package:better_accounting/constants/assets.gen.dart';
 import 'package:better_accounting/pages/accounts/accounts_controller.dart';
+import 'package:better_accounting/pages/accounts/accounts_model.dart';
 import 'package:better_accounting/utils/logger_util.dart';
 import 'package:better_accounting/widgets/custom_divider.dart';
 import 'package:better_accounting/widgets/date_picker/date_picker_view.dart';
@@ -23,6 +24,7 @@ class AccountsPage extends GetView<AccountsController> {
             alignment: Alignment.topCenter,
             children: [_header(), Positioned(bottom: 40.h, child: _card())],
           ),
+          Expanded(child: _accountsListView())
         ],
       ),
     );
@@ -117,6 +119,19 @@ class AccountsPage extends GetView<AccountsController> {
     );
   }
 
+  Widget _accountsListView() {
+    return Obx(() => ListView.separated(
+        shrinkWrap: true,
+        itemBuilder: (_, index) {
+          return _accountsItem(controller.accountsList[index]);
+        },
+        separatorBuilder: (_, index) {
+          return const CustomDivider();
+        },
+        cacheExtent: 44.w,
+        itemCount: controller.accountsList.length));
+  }
+
   Widget _card() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -203,5 +218,49 @@ class AccountsPage extends GetView<AccountsController> {
         )
       ],
     );
+  }
+
+  Widget _accountsItem(AccountsModel accountsModel) {
+    return Container(
+        color: AppColors.mainWhite,
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(8.r)),
+              width: 44.w,
+              height: 44.w,
+              child: Image.asset(
+                accountsModel.icon.value!.assetPath,
+                width: 44.w,
+                height: 44.w,
+              ),
+            ),
+            SizedBox(width: 18.w),
+            Column(
+              children: [
+                Text(
+                  accountsModel.memo ?? accountsModel.icon.value!.name.tr,
+                  style:
+                      TextStyle(color: AppColors.mainTitle333, fontSize: 18.sp),
+                ),
+                if (accountsModel.tag?.isNotEmpty == true)
+                  Text(accountsModel.tag?.join(" ") ?? "")
+              ],
+            ),
+            const Spacer(),
+            Text(
+              accountsModel.amount.toStringAsFixed(2),
+              style: TextStyle(
+                  color: accountsModel.amount.isNegative
+                      ? AppColors.textRed
+                      : AppColors.textGreen,
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold),
+            )
+          ],
+        ));
   }
 }

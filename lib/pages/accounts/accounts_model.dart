@@ -7,7 +7,7 @@ part 'accounts_model.g.dart';
 class AccountsModel {
   Id? id;
   // icon信息
-  final icon = IsarLink<IconAssetModel>();
+  var icon = IsarLink<IconAssetModel>();
   // 金额负的是支出,正的为收入
   late double amount;
   // 备注

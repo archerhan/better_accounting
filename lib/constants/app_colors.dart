@@ -13,4 +13,6 @@ class AppColors {
   static const dividerEEE = Color(0xffeeeeee); //分割线,背景
   static const warningRed = Color(0xffff5141); // 警告红色
   static const lightBlue = Color(0xff5aa5e2); // 浅蓝色
+  static const textRed = Color(0xffee5a55); // 收入红色
+  static const textGreen = Color(0xff4ac367); // 支出绿色
 }

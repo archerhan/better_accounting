@@ -1,4 +1,5 @@
 import 'package:better_accounting/constants/app_colors.dart';
+import 'package:better_accounting/pages/accounts/accounts_controller.dart';
 import 'package:better_accounting/pages/accounts/accounts_model.dart';
 import 'package:better_accounting/pages/category/category_controller.dart';
 import 'package:better_accounting/pages/category/category_edit_page.dart';
@@ -50,8 +51,18 @@ class CategoryPage extends GetView<CategoryController> {
               hideExpression: false,
               hideSurroundingBorder: true,
               autofocus: true,
-              onChanged: (key, value, expression) {
+              onChanged: (key, value, expression) async {
                 if (key == "OK") {
+                  final accountsController = Get.find<AccountsController>();
+                  if (value != 0) {
+                    var v = value!;
+                    if (controller.tabController.index == 0) {
+                      v = -value;
+                    }
+                    await accountsController.addNewAccountsRecord(
+                        controller.currentSelectedIcon.value, v);
+                  }
+
                   controller.panelController.close();
                   Get.back();
                 }

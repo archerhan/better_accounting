@@ -1,5 +1,5 @@
-import 'package:better_accounting/services/setting_service.dart';
 import 'package:better_accounting/pages/accounts/accounts_model.dart';
+import 'package:better_accounting/services/setting_service.dart';
 import 'package:better_accounting/utils/logger_util.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
