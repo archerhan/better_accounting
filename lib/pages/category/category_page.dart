@@ -3,7 +3,11 @@ import 'package:better_accounting/pages/accounts/accounts_controller.dart';
 import 'package:better_accounting/pages/accounts/accounts_model.dart';
 import 'package:better_accounting/pages/category/category_controller.dart';
 import 'package:better_accounting/pages/category/category_edit_page.dart';
+import 'package:better_accounting/utils/keyboard_height_mixin.dart';
+import 'package:better_accounting/utils/logger_util.dart';
 import 'package:better_accounting/widgets/caculator/simple_calculator.dart';
+import 'package:better_accounting/widgets/date_picker/date_picker_view.dart';
+import 'package:better_accounting/widgets/dialog.dart';
 import 'package:better_accounting/widgets/vertical_line.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +16,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class CategoryPage extends GetView<CategoryController> {
-  const CategoryPage({super.key});
+class CategoryPage extends GetView<CategoryController>
+    with WidgetsBindingObserver {
+  CategoryPage({super.key});
+  
+  @override
+  void didChangeMetrics() {
 
+    super.didChangeMetrics();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +52,7 @@ class CategoryPage extends GetView<CategoryController> {
 
   Widget _showCal() {
     return SizedBox(
-      height: 380,
+      height: 200,
       child: Column(
         children: [
           _calToolBar(),
@@ -102,39 +112,58 @@ class CategoryPage extends GetView<CategoryController> {
   }
 
   Widget _calToolBar() {
-    return Row(
+    return Column(
       children: [
-        TextButton.icon(
-            label: Text("日期"),
-            onPressed: () {},
-            icon: const Icon(
-              Icons.calendar_month,
-              color: AppColors.brightBlue,
-            )),
-        const VerticalLine(),
-        TextButton.icon(
-            label: Text("备注"),
-            onPressed: () {},
-            icon: const Icon(
-              Icons.note,
-              color: AppColors.brightBlue,
-            )),
-        const VerticalLine(),
-        TextButton.icon(
-            label: Text("标签"),
-            onPressed: () {},
-            icon: const Icon(
-              Icons.label,
-              color: AppColors.brightBlue,
-            )),
-        const VerticalLine(),
-        TextButton.icon(
-            label: Text("定位"),
-            onPressed: () {},
-            icon: const Icon(
-              Icons.location_on,
-              color: AppColors.brightBlue,
-            )),
+        Row(
+          children: [
+            TextButton.icon(
+                label: const Text("日期"),
+                onPressed: () {
+                  showCustomDateTimeDialog(
+                      showType: DatePickerShowType.ymd,
+                      onOKTap: (date) {
+                        logger.d(date);
+                      });
+                },
+                icon: const Icon(
+                  Icons.calendar_month,
+                  color: AppColors.brightBlue,
+                )),
+            const VerticalLine(),
+            TextButton.icon(
+                label: const Text("备注"),
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.note,
+                  color: AppColors.brightBlue,
+                )),
+            const VerticalLine(),
+            TextButton.icon(
+                label: const Text("标签"),
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.label,
+                  color: AppColors.brightBlue,
+                )),
+            const VerticalLine(),
+            TextButton.icon(
+                label: const Text("定位"),
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.location_on,
+                  color: AppColors.brightBlue,
+                )),
+          ],
+        ),
+        Container(
+          height: 40.h,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4.r),
+              border: Border.all(width: 1, color: AppColors.greyCCC)),
+          child: TextField(
+            decoration: InputDecoration(border: InputBorder.none),
+          ),
+        )
       ],
     );
   }

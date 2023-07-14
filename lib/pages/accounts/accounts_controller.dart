@@ -27,11 +27,6 @@ class AccountsController extends GetxController {
   // 首页所有的账目
   var accountsList = <AccountsModel>[].obs;
 
-  @override
-  void onInit() async {
-    super.onInit();
-  }
-
   // 加载所有数据
   Future loadAllAccountsRecord() async {
     var list = await IsarService.instance.isar.accountsModels

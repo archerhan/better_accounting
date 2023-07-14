@@ -33,7 +33,7 @@ class RootPage extends GetView<RootController> {
       backgroundColor: AppColors.primaryBlue,
       onPressed: () {
         SystemSound.play(SystemSoundType.click);
-        Get.to(const CategoryPage(),
+        Get.to(CategoryPage(),
             binding: CategoryBinding(),
             transition: Transition.downToUp,
             curve: Curves.easeInOut);
