@@ -1,7 +1,10 @@
 name: better_accounting
-description: A new Flutter project.
+description: Better记账 - 一个用 Flutter 写的本地记账 App.
 publish_to: 'none'
 version: 1.0.0+1
+
+homepage: https://github.com/archerhan/better_accounting
+repository: https://github.com/archerhan/better_accounting
 
 environment:
   sdk: ^3.12.0
