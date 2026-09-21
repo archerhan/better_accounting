@@ -1,11 +1,13 @@
 import 'package:better_accounting/constants/app_colors.dart';
 import 'package:better_accounting/constants/assets.gen.dart';
+import 'package:better_accounting/pages/accounts/accounts_chart_page.dart';
 import 'package:better_accounting/pages/accounts/accounts_controller.dart';
 import 'package:better_accounting/pages/accounts/accounts_model.dart';
-import 'package:better_accounting/utils/logger_util.dart';
+import 'package:better_accounting/utils/formatter.dart';
 import 'package:better_accounting/widgets/custom_divider.dart';
 import 'package:better_accounting/widgets/date_picker/date_picker_view.dart';
 import 'package:better_accounting/widgets/dialog.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,15 +24,29 @@ class AccountsPage extends GetView<AccountsController> {
         children: [
           Stack(
             alignment: Alignment.topCenter,
-            children: [_header(), Positioned(bottom: 40.h, child: _card())],
+            children: [
+              _header(context),
+              Positioned(bottom: 40.h, child: _card()),
+            ],
           ),
-          Expanded(child: _accountsListView())
+          Expanded(child: _accountsListView()),
         ],
       ),
     );
   }
 
-  Widget _header() {
+  Future<void> _pickMonth(BuildContext context) async {
+    final picked = await showCustomDateTimeDialog(
+      context,
+      showType: DatePickerShowType.ym,
+      initialDate: controller.selectedMonth.value,
+    );
+    if (picked != null) {
+      controller.selectMonth(picked);
+    }
+  }
+
+  Widget _header(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -45,91 +61,123 @@ class AccountsPage extends GetView<AccountsController> {
               SizedBox(height: 60.h),
               Row(
                 children: [
-                  GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {},
-                    child: Icon(
-                      CupertinoIcons.search,
-                      size: 36.w,
-                      color: AppColors.mainWhite,
-                    ),
+                  _headerIcon(
+                    icon: CupertinoIcons.search,
+                    onTap: () => BotToast.showText(text: '搜索功能还在开发中'),
                   ),
                   const Spacer(),
                   Assets.images.common.betterLogo
                       .image(width: 101.w, height: 25.h),
                   const Spacer(),
-                  GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {},
-                    child: Icon(
-                      CupertinoIcons.calendar,
-                      size: 36.w,
-                      color: AppColors.mainWhite,
-                    ),
+                  _headerIcon(
+                    icon: CupertinoIcons.calendar,
+                    onTap: () => _pickMonth(context),
                   ),
                 ],
               ).paddingSymmetric(horizontal: 20.w),
               SizedBox(height: 30.h),
               Row(
                 children: [
-                  GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      showCustomDateTimeDialog(
-                          showType: DatePickerShowType.ym,
-                          onOKTap: (date) {
-                            logger.d(date);
-                          });
-                    },
-                    child: Obx(() => Text(
-                          "${controller.selectedYear.string}年${controller.selectedMonth.string}月",
-                          style: TextStyle(
-                              fontSize: 20.sp,
-                              color: AppColors.mainWhite,
-                              fontWeight: FontWeight.w500),
-                        )),
-                  ),
-                  Icon(
-                    Icons.arrow_drop_down,
-                    size: 24.w,
-                    color: AppColors.mainWhite,
-                  ),
-                  const Spacer(),
-                  Text.rich(TextSpan(children: [
-                    TextSpan(
-                        text: "accounts_balance".tr,
-                        style: TextStyle(
-                            fontSize: 20.sp, color: AppColors.mainWhite)),
-                    TextSpan(
-                        text: "￥${controller.balance}",
-                        style: TextStyle(
-                            fontSize: 28.sp,
+                  Flexible(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () => _pickMonth(context),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Obx(() => Text(
+                                controller.monthLabel,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontSize: 20.sp,
+                                    color: AppColors.mainWhite,
+                                    fontWeight: FontWeight.w500),
+                              )),
+                          Icon(
+                            Icons.arrow_drop_down,
+                            size: 24.w,
                             color: AppColors.mainWhite,
-                            fontWeight: FontWeight.w600))
-                  ])),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerRight,
+                        child: Obx(() => Text.rich(TextSpan(children: [
+                              TextSpan(
+                                  text: "accounts_balance".tr,
+                                  style: TextStyle(
+                                      fontSize: 20.sp,
+                                      color: AppColors.mainWhite)),
+                              TextSpan(
+                                  text:
+                                      "￥${formatMoney(controller.summary.value.balance)}",
+                                  style: TextStyle(
+                                      fontSize: 28.sp,
+                                      color: AppColors.mainWhite,
+                                      fontWeight: FontWeight.w600))
+                            ]))),
+                      ),
+                    ),
+                  ),
                 ],
               ).paddingSymmetric(horizontal: 40.w)
             ],
           ),
         ),
-        SizedBox(
-          height: 160.h,
-        )
+        SizedBox(height: 160.h),
       ],
     );
   }
 
+  Widget _headerIcon({required IconData icon, required VoidCallback onTap}) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: onTap,
+      child: Icon(icon, size: 36.w, color: AppColors.mainWhite),
+    );
+  }
+
   Widget _accountsListView() {
-    return Obx(() => ListView.separated(
-        shrinkWrap: true,
-        itemBuilder: (_, index) {
-          return _accountsItem(controller.accountsList[index]);
-        },
-        separatorBuilder: (_, index) {
-          return const CustomDivider();
-        },
-        cacheExtent: 44.w,
-        itemCount: controller.accountsList.length));
+    return Obx(() {
+      final records = controller.monthlyAccounts;
+      if (records.isEmpty) return _emptyView();
+      return ListView.separated(
+        padding: EdgeInsets.only(bottom: 100.h),
+        itemCount: records.length,
+        itemBuilder: (_, index) => _accountsItem(records[index]),
+        separatorBuilder: (_, index) => const CustomDivider(),
+      );
+    });
+  }
+
+  Widget _emptyView() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(CupertinoIcons.doc_text,
+              size: 60.w, color: AppColors.greyCCC),
+          SizedBox(height: 16.h),
+          Text(
+            "accounts_empty".tr,
+            style: TextStyle(color: AppColors.grey999, fontSize: 15.sp),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            "accounts_empty_hint".tr,
+            style: TextStyle(color: AppColors.grey999, fontSize: 13.sp),
+          ),
+          SizedBox(height: 80.h),
+        ],
+      ),
+    );
   }
 
   Widget _card() {
@@ -151,41 +199,60 @@ class AccountsPage extends GetView<AccountsController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [_numItem(0), _numItem(1)],
+            children: [
+              Expanded(child: _numItem(0)),
+              SizedBox(width: 8.w),
+              Expanded(child: _numItem(1)),
+            ],
           ).paddingSymmetric(vertical: 20.h),
           const CustomDivider(
             height: 2,
             color: AppColors.greyCCC,
           ),
           SizedBox(height: 20.h),
-          Text(
-            "本月你在交通花费了￥1080，让我们更节省一些吧~",
-            style: TextStyle(
-                color: AppColors.grey999,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w300),
-          ),
+          Obx(() => Text(
+                _monthlyTip(),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: AppColors.grey999,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w300),
+              )),
           const Spacer(),
-          Text(
-            "accounts_more_analyze".tr,
-            style: TextStyle(
-                color: AppColors.lightBlue,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w300,
-                decoration: TextDecoration.underline),
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () => Get.to(() => const AccountsChartPage()),
+            child: Text(
+              "accounts_more_analyze".tr,
+              style: TextStyle(
+                  color: AppColors.lightBlue,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w300,
+                  decoration: TextDecoration.underline),
+            ),
           ),
-          SizedBox(
-            height: 20.h,
-          )
+          SizedBox(height: 20.h),
         ],
       ),
     );
   }
 
+  /// 本月花费最多的分类, 用来提示用户
+  String _monthlyTip() {
+    final ranking = controller.monthlyExpensesByIcon;
+    if (ranking.isEmpty) return 'accounts_empty_tip'.tr;
+    final top = ranking.first;
+    return 'accounts_month_tip'.trParams({
+      'category': top.name.tr,
+      'amount': formatMoney(top.amount),
+    });
+  }
+
   Widget _numItem(int type) {
+    final isExpense = type == 0;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
@@ -194,65 +261,103 @@ class AccountsPage extends GetView<AccountsController> {
           height: 10,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: type == 0 ? AppColors.warningRed : AppColors.lightBlue),
+              color: isExpense ? AppColors.warningRed : AppColors.lightBlue),
         ),
         SizedBox(width: 5.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              type == 0 ? "accounts_expenses".tr : "accounts_income".tr,
-              style: TextStyle(color: AppColors.grey999, fontSize: 11.sp),
-            ),
-            SizedBox(height: 5.h),
-            Obx(() => Text(
-                  type == 0
-                      ? controller.expenses.string
-                      : controller.income.string,
-                  style: TextStyle(
-                      color: AppColors.mainTitle333,
-                      fontSize: 28.sp,
-                      fontWeight: FontWeight.bold),
-                ))
-          ],
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                isExpense ? "accounts_expenses".tr : "accounts_income".tr,
+                style: TextStyle(color: AppColors.grey999, fontSize: 11.sp),
+              ),
+              SizedBox(height: 5.h),
+              Obx(() => FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      formatMoney(isExpense
+                          ? controller.summary.value.expenses
+                          : controller.summary.value.income),
+                      maxLines: 1,
+                      style: TextStyle(
+                          color: AppColors.mainTitle333,
+                          fontSize: 28.sp,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )),
+            ],
+          ),
         )
       ],
     );
   }
 
   Widget _accountsItem(AccountsModel accountsModel) {
+    final icon = accountsModel.icon.value;
+    final tags = accountsModel.tag ?? const <String>[];
+    final createDT = accountsModel.createDT;
     return Container(
         color: AppColors.mainWhite,
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
         child: Row(
           children: [
-            Container(
-              alignment: Alignment.center,
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(8.r)),
+            SizedBox(
               width: 44.w,
               height: 44.w,
-              child: Image.asset(
-                accountsModel.icon.value!.assetPath,
-                width: 44.w,
-                height: 44.w,
-              ),
+              child: icon == null
+                  ? const SizedBox.shrink()
+                  : Image.asset(
+                      icon.assetPath,
+                      width: 44.w,
+                      height: 44.w,
+                      fit: BoxFit.contain,
+                    ),
             ),
             SizedBox(width: 18.w),
-            Column(
-              children: [
-                Text(
-                  accountsModel.memo ?? accountsModel.icon.value!.name.tr,
-                  style:
-                      TextStyle(color: AppColors.mainTitle333, fontSize: 18.sp),
-                ),
-                if (accountsModel.tag?.isNotEmpty == true)
-                  Text(accountsModel.tag?.join(" ") ?? "")
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    accountsModel.memo ??
+                        (icon == null ? '' : icon.name.tr),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style:
+                        TextStyle(color: AppColors.mainTitle333, fontSize: 18.sp),
+                  ),
+                  SizedBox(height: 4.h),
+                  Row(
+                    children: [
+                      if (createDT != null)
+                        Text(
+                          formatDateTime(createDT),
+                          style: TextStyle(
+                              color: AppColors.grey999, fontSize: 12.sp),
+                        ),
+                      if (tags.isNotEmpty) ...[
+                        SizedBox(width: 8.w),
+                        Flexible(
+                          child: Text(
+                            tags.map((tag) => '#$tag').join(' '),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: AppColors.lightBlue, fontSize: 12.sp),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-            const Spacer(),
+            SizedBox(width: 12.w),
             Text(
-              accountsModel.amount.toStringAsFixed(2),
+              formatSignedMoney(accountsModel.amount),
               style: TextStyle(
                   color: accountsModel.amount.isNegative
                       ? AppColors.textRed

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:better_accounting/pages/accounts/accounts_model.dart';
 import 'package:better_accounting/services/isar_service.dart';
 import 'package:flutter/material.dart';
@@ -7,49 +9,63 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class CategoryController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  var iconList = <IconAssetModel>[].obs;
-  var expensesList = <IconAssetModel>[].obs;
-  var incomeList = <IconAssetModel>[].obs;
-  var currentSelectedIcon = IconAssetModel().obs;
-  PanelController panelController = PanelController();
+  final iconList = <IconAssetModel>[].obs;
+  final expensesList = <IconAssetModel>[].obs;
+  final incomeList = <IconAssetModel>[].obs;
 
-  late TabController tabController;
-  late PageController pageController;
+  /// 当前选中的分类, 没选之前是 null
+  final currentSelectedIcon = Rxn<IconAssetModel>();
+
+  /// 记账弹框里的"备注"输入框
+  final memoController = TextEditingController();
+
+  /// 记账弹框里选中的日期
+  final selectedDate = DateTime.now().obs;
+
+  final panelController = PanelController();
+
+  late final TabController tabController;
+  late final PageController pageController;
 
   @override
-  void onInit() async {
+  void onInit() {
+    super.onInit();
     tabController = TabController(length: 2, vsync: this);
     pageController = PageController();
-    await loadIconAssetsFronDB();
-    super.onInit();
+    unawaited(loadIconAssetsFromDB());
   }
 
-  Future loadIconAssetsFronDB() async {
-    iconList.value =
-        await IsarService.instance.isar.iconAssetModels.where().findAll();
-    expensesList.value = iconList
-        .where((element) => element.iconCategory != IconCategory.income)
-        .toList();
-    incomeList.value = iconList
-        .where((element) => element.iconCategory == IconCategory.income)
-        .toList();
+  @override
+  void onClose() {
+    tabController.dispose();
+    pageController.dispose();
+    memoController.dispose();
+    super.onClose();
   }
 
-  void selectIcon(IconAssetModel iconAssetModel) {
-    currentSelectedIcon.value = iconAssetModel;
-    iconList.value = iconList.map<IconAssetModel>((element) {
-      element.isSelected = false;
-      if (element.id == iconAssetModel.id) {
-        element.isSelected = true;
-      }
-      return element;
-    }).toList();
-    if (iconAssetModel.iconType == IconType.expenses) {
-      expensesList.refresh();
-    } else {
-      incomeList.refresh();
+  Future<void> loadIconAssetsFromDB() async {
+    final all = await IsarService.instance.isar.iconAssetModels.where().findAll();
+    all.sort((a, b) => (a.index ?? 0).compareTo(b.index ?? 0));
+    iconList.assignAll(all);
+    expensesList.assignAll(all.where((icon) => icon.iconType == IconType.expenses));
+    incomeList.assignAll(all.where((icon) => icon.iconType == IconType.income));
+  }
+
+  bool isSelected(IconAssetModel icon) {
+    final selected = currentSelectedIcon.value;
+    if (selected == null) return false;
+    return selected.id != null
+        ? selected.id == icon.id
+        : identical(selected, icon);
+  }
+
+  /// 选中一个分类. [openPanel] 为 true 时顺带把记账键盘弹出来
+  void selectIcon(IconAssetModel icon, {bool openPanel = true}) {
+    currentSelectedIcon.value = icon;
+    if (openPanel) {
+      panelController.open();
     }
-    panelController.open();
   }
 
+  void updateSelectedDate(DateTime date) => selectedDate.value = date;
 }

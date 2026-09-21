@@ -20,10 +20,12 @@ class RootPage extends GetView<RootController> {
       floatingActionButton: _addBtn(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _bottomNavigationBar(),
-      body: Obx(() => IndexedStack(
-            index: controller.activeIndex.value,
-            children: const [AccountsPage(), SettingsPage()],
-          )),
+      body: Obx(
+        () => IndexedStack(
+          index: controller.activeIndex.value,
+          children: const [AccountsPage(), SettingsPage()],
+        ),
+      ),
     );
   }
 
@@ -31,12 +33,16 @@ class RootPage extends GetView<RootController> {
     return FloatingActionButton(
       materialTapTargetSize: MaterialTapTargetSize.padded,
       backgroundColor: AppColors.primaryBlue,
+      // Material 3 的 FAB 默认是圆角方形, 这里保持原来的圆形
+      shape: const CircleBorder(),
       onPressed: () {
         SystemSound.play(SystemSoundType.click);
-        Get.to(CategoryPage(),
-            binding: CategoryBinding(),
-            transition: Transition.downToUp,
-            curve: Curves.easeInOut);
+        Get.to(
+          () => const CategoryPage(),
+          binding: CategoryBinding(),
+          transition: Transition.downToUp,
+          curve: Curves.easeInOut,
+        );
       },
       child: const Icon(
         CupertinoIcons.add,

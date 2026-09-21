@@ -3,28 +3,21 @@ import 'package:better_accounting/pages/accounts/accounts_controller.dart';
 import 'package:better_accounting/pages/accounts/accounts_model.dart';
 import 'package:better_accounting/pages/category/category_controller.dart';
 import 'package:better_accounting/pages/category/category_edit_page.dart';
-import 'package:better_accounting/utils/keyboard_height_mixin.dart';
+import 'package:better_accounting/utils/formatter.dart';
 import 'package:better_accounting/utils/logger_util.dart';
 import 'package:better_accounting/widgets/caculator/simple_calculator.dart';
 import 'package:better_accounting/widgets/date_picker/date_picker_view.dart';
 import 'package:better_accounting/widgets/dialog.dart';
 import 'package:better_accounting/widgets/vertical_line.dart';
-import 'package:flutter/foundation.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:get/get.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class CategoryPage extends GetView<CategoryController>
-    with WidgetsBindingObserver {
-  CategoryPage({super.key});
-  
-  @override
-  void didChangeMetrics() {
+class CategoryPage extends GetView<CategoryController> {
+  const CategoryPage({super.key});
 
-    super.didChangeMetrics();
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +35,7 @@ class CategoryPage extends GetView<CategoryController>
         controller: controller.panelController,
         minHeight: 0,
         maxHeight: 380,
-        panel: _showCal(),
+        panel: _calculatorPanel(context),
         body: Column(
           children: [Expanded(child: _pageView())],
         ),
@@ -50,40 +43,24 @@ class CategoryPage extends GetView<CategoryController>
     );
   }
 
-  Widget _showCal() {
+  Widget _calculatorPanel(BuildContext context) {
     return SizedBox(
-      height: 200,
+      // 面板高度 = SlidingUpPanel 的 maxHeight, 给计算器留足显示区
+      height: 380,
       child: Column(
         children: [
-          _calToolBar(),
+          _calToolBar(context),
           Expanded(
             child: SimpleCalculator(
               hideExpression: false,
               hideSurroundingBorder: true,
               autofocus: true,
               onChanged: (key, value, expression) async {
-                if (key == "OK") {
-                  final accountsController = Get.find<AccountsController>();
-                  if (value != 0) {
-                    var v = value!;
-                    if (controller.tabController.index == 0) {
-                      v = -value;
-                    }
-                    await accountsController.addNewAccountsRecord(
-                        controller.currentSelectedIcon.value, v);
-                  }
-
-                  controller.panelController.close();
-                  Get.back();
+                if (key != "OK") {
+                  logger.d('$key\t$value\t$expression');
+                  return;
                 }
-                if (kDebugMode) {
-                  print('$key\t$value\t$expression');
-                }
-              },
-              onTappedDisplay: (value, details) {
-                if (kDebugMode) {
-                  print('$value\t${details.globalPosition}');
-                }
+                await _saveRecord(value);
               },
               theme: const CalculatorThemeData(
                 borderColor: AppColors.dividerEEE,
@@ -111,59 +88,70 @@ class CategoryPage extends GetView<CategoryController>
     );
   }
 
-  Widget _calToolBar() {
+  /// 点计算器上的 OK: 存一笔账然后回到首页
+  Future<void> _saveRecord(double? value) async {
+    final icon = controller.currentSelectedIcon.value;
+    final amount = value ?? 0;
+    if (icon != null && amount != 0) {
+      // 支出存负数, 收入存正数
+      final signed = controller.tabController.index == 0 ? -amount : amount;
+      final memo = controller.memoController.text.trim();
+      await Get.find<AccountsController>().addNewAccountsRecord(
+        icon,
+        signed,
+        memo: memo.isEmpty ? null : memo,
+        createDT: controller.selectedDate.value,
+      );
+    }
+    controller.panelController.close();
+    controller.memoController.clear();
+    Get.back();
+  }
+
+  Widget _calToolBar(BuildContext context) {
     return Column(
       children: [
         Row(
           children: [
             TextButton.icon(
-                label: const Text("日期"),
-                onPressed: () {
-                  showCustomDateTimeDialog(
-                      showType: DatePickerShowType.ymd,
-                      onOKTap: (date) {
-                        logger.d(date);
-                      });
-                },
-                icon: const Icon(
-                  Icons.calendar_month,
-                  color: AppColors.brightBlue,
-                )),
+              label: Obx(() => Text(formatDay(controller.selectedDate.value))),
+              onPressed: () async {
+                final picked = await showCustomDateTimeDialog(
+                  context,
+                  showType: DatePickerShowType.ymd,
+                  initialDate: controller.selectedDate.value,
+                );
+                if (picked != null) controller.updateSelectedDate(picked);
+              },
+              icon: const Icon(
+                Icons.calendar_month,
+                color: AppColors.brightBlue,
+              ),
+            ),
+            const VerticalLine(),
+            Expanded(
+              child: TextField(
+                controller: controller.memoController,
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  isDense: true,
+                  hintText: 'accounts_memo_hint'.tr,
+                  hintStyle: TextStyle(
+                      color: AppColors.grey999, fontSize: 13.sp),
+                ),
+                style: TextStyle(
+                    color: AppColors.mainTitle333, fontSize: 13.sp),
+              ),
+            ),
             const VerticalLine(),
             TextButton.icon(
-                label: const Text("备注"),
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.note,
-                  color: AppColors.brightBlue,
-                )),
-            const VerticalLine(),
-            TextButton.icon(
-                label: const Text("标签"),
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.label,
-                  color: AppColors.brightBlue,
-                )),
-            const VerticalLine(),
-            TextButton.icon(
-                label: const Text("定位"),
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.location_on,
-                  color: AppColors.brightBlue,
-                )),
+              label: const Text("标签"),
+              onPressed: () => BotToast.showText(text: '标签功能还在开发中'),
+              icon: const Icon(Icons.label, color: AppColors.brightBlue),
+            ),
           ],
         ),
-        Container(
-          height: 40.h,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4.r),
-              border: Border.all(width: 1, color: AppColors.greyCCC)),
-          child: TextField(
-            decoration: InputDecoration(border: InputBorder.none),
-          ),
-        )
       ],
     );
   }
@@ -171,7 +159,7 @@ class CategoryPage extends GetView<CategoryController>
   Widget _settingIcon() {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: () => Get.to(const CategoryEditPage()),
+      onTap: () => Get.to(() => const CategoryEditPage()),
       child: Container(
         padding: EdgeInsets.all(5.w),
         child: Icon(
@@ -188,12 +176,8 @@ class CategoryPage extends GetView<CategoryController>
       width: 200.w,
       child: TabBar(
         tabs: [
-          Tab(
-            text: "accounts_expenses".tr,
-          ),
-          Tab(
-            text: "accounts_income".tr,
-          )
+          Tab(text: "accounts_expenses".tr),
+          Tab(text: "accounts_income".tr),
         ],
         labelColor: AppColors.mainTitle333,
         labelStyle: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600),
@@ -219,33 +203,20 @@ class CategoryPage extends GetView<CategoryController>
       onPageChanged: (value) {
         controller.tabController.animateTo(value);
       },
-      children: [_expensesListView(), _incomeListView()],
+      children: [
+        _iconGrid(controller.expensesList),
+        _iconGrid(controller.incomeList),
+      ],
     );
   }
 
-  Widget _expensesListView() {
+  Widget _iconGrid(List<IconAssetModel> icons) {
     return Obx(() => GridView.builder(
-          shrinkWrap: true,
-          // physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.only(top: 12.h, bottom: 120.h),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4),
-          itemBuilder: (_, index) {
-            return _iconItem(controller.expensesList[index]);
-          },
-          itemCount: controller.expensesList.length,
-        ));
-  }
-
-  Widget _incomeListView() {
-    return Obx(() => GridView.builder(
-          shrinkWrap: true,
-          // physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4),
-          itemBuilder: (_, index) {
-            return _iconItem(controller.incomeList[index]);
-          },
-          itemCount: controller.incomeList.length,
+          itemBuilder: (_, index) => _iconItem(icons[index]),
+          itemCount: icons.length,
         ));
   }
 
@@ -254,24 +225,22 @@ class CategoryPage extends GetView<CategoryController>
       children: [
         GestureDetector(
           behavior: HitTestBehavior.translucent,
-          onTap: () {
-            _showCal();
-            controller.selectIcon(iconAssetModel);
-          },
-          child: Container(
-            padding: EdgeInsets.all(5.r),
-            decoration: BoxDecoration(
-                color: iconAssetModel.isSelected == true
-                    ? AppColors.primaryYellow.withOpacity(0.7)
-                    : AppColors.mainWhite,
-                borderRadius: BorderRadius.circular(8.r)),
-            child: Image.asset(
-              iconAssetModel.assetPath,
-              width: 50.w,
-              height: 50.w,
-              fit: BoxFit.contain,
-            ),
-          ),
+          onTap: () => controller.selectIcon(iconAssetModel),
+          child: Obx(() => Container(
+                padding: EdgeInsets.all(5.r),
+                decoration: BoxDecoration(
+                  color: controller.isSelected(iconAssetModel)
+                      ? AppColors.primaryYellow.withValues(alpha: 0.7)
+                      : AppColors.mainWhite,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Image.asset(
+                  iconAssetModel.assetPath,
+                  width: 50.w,
+                  height: 50.w,
+                  fit: BoxFit.contain,
+                ),
+              )),
         ),
         SizedBox(height: 8.h),
         Text(

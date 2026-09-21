@@ -4,20 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-/// 日期选择弹框
-Future<int?> showCustomDateTimeDialog(
-    {DatePickerShowType? showType, Function(String)? onOKTap}) async {
-  var logic = Get.find<DatePickerController>();
-  return showModalBottomSheet<int>(
+/// 日期选择弹框.
+///
+/// 返回用户选中的日期, 点关闭/取消时返回 null.
+Future<DateTime?> showCustomDateTimeDialog(
+  BuildContext context, {
+  DatePickerShowType showType = DatePickerShowType.ymd,
+  DateTime? initialDate,
+}) {
+  final logic =
+      Get.find<DatePickerController>()..resetTo(initialDate ?? DateTime.now());
+  return showModalBottomSheet<DateTime>(
+    context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    context: Get.context!,
     builder: (BuildContext context) {
       return Container(
-        padding: EdgeInsets.only(
-          left: 20.w,
-          right: 20.w,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
         clipBehavior: Clip.antiAlias,
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -26,30 +29,21 @@ Future<int?> showCustomDateTimeDialog(
             topRight: Radius.circular(20.0),
           ),
         ),
-        height: MediaQuery.of(context).size.height / 3.0,
+        height: MediaQuery.sizeOf(context).height / 3.0,
         child: Column(children: [
           SizedBox(
             height: 50.h,
             child: Row(
               children: [
                 IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    }),
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
                 const Spacer(),
                 GestureDetector(
-                  onTap: () {
-                    if (logic.selectYear.toString().isEmpty ||
-                        logic.selectYear.toString().isEmpty) {
-                      return;
-                    }
-                    var date = '${logic.selectYear}-${logic.selectMonth}';
-                    if (onOKTap != null) {
-                      onOKTap(date);
-                    }
-                    Navigator.of(context).pop();
-                  },
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () =>
+                      Navigator.of(context).pop(logic.selectedDateTime),
                   child: Text(
                     'common_ok'.tr,
                     style:
@@ -60,10 +54,7 @@ Future<int?> showCustomDateTimeDialog(
             ),
           ),
           const Divider(height: 1.0),
-          Expanded(
-              child: DatePickerView(
-            showType:showType ?? DatePickerShowType.ymd,
-          )),
+          Expanded(child: DatePickerView(showType: showType)),
         ]),
       );
     },

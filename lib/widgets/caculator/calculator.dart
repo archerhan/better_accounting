@@ -207,7 +207,7 @@ class Calculator {
   final int maximumDigits;
 
   /// Create a [Calculator] with [maximumDigits] is 10 and maximumFractionDigits of [numberFormat] is 6.
-  Calculator({maximumDigits = 10})
+  Calculator({int maximumDigits = 10})
       : this.numberFormat(
             NumberFormat()..maximumFractionDigits = 6, maximumDigits);
 
@@ -218,13 +218,13 @@ class Calculator {
         _display = CalcDisplay(numberFormat, maximumDigits);
 
   /// Display string
-  get displayString => _display.string;
+  String get displayString => _display.string;
 
   /// Display value
-  get displayValue => _display.value;
+  double get displayValue => _display.value;
 
   /// Expression
-  get expression => _expression.value;
+  String get expression => _expression.value;
 
   /// Set the value.
   void setValue(double val) {

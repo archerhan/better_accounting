@@ -20,6 +20,7 @@ class CustomAppBar extends AppBar {
       end: Alignment.centerRight,
     ),
     this.rightActions = const [],
+    super.bottom,
   }) : super(
           leading: leftAction,
           title: Text(text,

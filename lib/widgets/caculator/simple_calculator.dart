@@ -124,7 +124,7 @@ class SimpleCalculator extends StatefulWidget {
   final CalcController? controller;
 
   const SimpleCalculator({
-    Key? key,
+    super.key,
     this.theme,
     this.hideExpression = false,
     this.value = 0,
@@ -136,7 +136,7 @@ class SimpleCalculator extends StatefulWidget {
     this.autofocus = false,
     this.focusNode,
     this.controller,
-  }) : super(key: key);
+  });
 
   @override
   SimpleCalculatorState createState() => SimpleCalculatorState();
@@ -496,13 +496,12 @@ class _CalcDisplay extends StatefulWidget {
   final Function(double?, TapDownDetails)? onTappedDisplay;
 
   const _CalcDisplay({
-    Key? key,
     this.hideSurroundingBorder,
     this.hideExpression,
     required this.onTappedDisplay,
     this.theme,
     required this.controller,
-  }) : super(key: key);
+  });
 
   @override
   _CalcDisplayState createState() => _CalcDisplayState();
